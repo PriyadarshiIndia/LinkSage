@@ -1,4 +1,4 @@
-const { createContext, Children, useEffect } = require("react");
+const { createContext, Children, useEffect, useContext } = require("react");
 const { default: useFetch } = require("./hooks/use-fetch");
 const { getCurrentUser } = require("./db/apiAuth");
 
@@ -15,6 +15,10 @@ const UrlProvider = ({Children}) => {
     },[])
 
     return <UrlContext.Provider value={{user,fetchUser,loading,isAuthenticated}} >{Children}</UrlContext.Provider>
+}
+
+export const UrlState = () => {
+    return useContext(UrlContext);
 }
 
 export default UrlProvider;
