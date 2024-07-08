@@ -1,37 +1,29 @@
-import React, { createContext, useEffect, useContext, useState } from "react";
+/* eslint-disable react/prop-types */
+
+import {createContext, useContext, useEffect} from "react";
+import {getCurrentUser} from "./db/apiAuth";
 import useFetch from "./hooks/use-fetch";
-import { getCurrentUser } from "./db/apiAuth";
 
-const UrlContext = createContext({
-  user: null,
-  fetchUser: () => {},
-  loading: false,
-  isAuthenticated: false,
-});
+const UrlContext = createContext();
 
-const UrlProvider = ({ children }) => {
-  const { data: user, loading, fn: fetchUser } = useFetch(getCurrentUser);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+const UrlProvider = ({children}) => {
+  const {data: user, loading, fn: fetchUser} = useFetch(getCurrentUser);
+
+  const isAuthenticated = user?.role === "authenticated";
 
   useEffect(() => {
     fetchUser();
-  }, [fetchUser]);
-
-  useEffect(() => {
-    if (user?.role === "authenticated") {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, [user]);
+  }, []);
 
   return (
-    <UrlContext.Provider value={{ user, fetchUser, loading, isAuthenticated }}>
+    <UrlContext.Provider value={{user, fetchUser, loading, isAuthenticated}}>
       {children}
     </UrlContext.Provider>
   );
 };
 
-export const UrlState = () => useContext(UrlContext);
+export const UrlState = () => {
+  return useContext(UrlContext);
+};
 
 export default UrlProvider;
